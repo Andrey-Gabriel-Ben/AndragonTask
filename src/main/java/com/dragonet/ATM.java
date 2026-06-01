@@ -21,11 +21,11 @@ public class ATM {
             boolean criou = pastaDocs.mkdirs(); // Executa a criação da pasta
 
             if (criou) {
-                System.out.println("É a sua primeira vez aqui, né? As suas tarefas ficarão salvas em: " + CAMINHO_PASTA
+                System.out.println("É a sua primeira vez aqui, né? As suas metas ficarão salvas em: " + CAMINHO_PASTA
                         + ", separadas por usuários.");
             } else {
                 System.out.println(
-                        "Ops, houve uma falha na criação do arquivo que irá armazenar as tarefas, isso resultará em um erro de execução, por favor, consulte o suporte para resolver.");
+                        "Ops, houve uma falha na criação do arquivo que irá armazenar as metas, isso resultará em um erro de execução, por favor, consulte o suporte para resolver.");
             }
         }
 
@@ -86,7 +86,7 @@ public class ATM {
                     }
 
                     if (emailLogado != null) {
-                        System.out.println("Direcionando para a sua lista de tarefas...");
+                        System.out.println("Direcionando para a sua lista de metas...");
                         return emailLogado;
                     }
                 }
@@ -130,6 +130,8 @@ public class ATM {
     }
 
     public static void main(String[] args) {
+        System.setOut(new java.io.PrintStream(System.out, true, java.nio.charset.StandardCharsets.UTF_8));
+        
         boolean executa = true;
         String atual = null;
 
@@ -154,16 +156,16 @@ public class ATM {
 
 pra dps
 
-public void encerrarSessao(List<Tarefa> listaDeTarefas, String emailLogado) {
+public void encerrarSessao(List<Meta> listaDeMetas, String emailLogado) {
     System.out.println("\n==================================================");
     System.out.println("🎉 ANDRAGON TASK - RESUMO DA SESSÃO 🎉");
     System.out.println("==================================================");
     
-    List<Tarefa> concluidas = new ArrayList<>();
-    List<Tarefa> pendentes = new ArrayList<>();
+    List<Meta> concluidas = new ArrayList<>();
+    List<Meta> pendentes = new ArrayList<>();
     
-    // 1. Separa as tarefas para saber o que apagar e o que manter
-    for (Tarefa t : listaDeTarefas) {
+    // 1. Separa as metas para saber o que apagar e o que manter
+    for (Meta t : listaDeMetas) {
         if (t.isConcluida()) {
             concluidas.add(t);
         } else {
@@ -173,18 +175,18 @@ public void encerrarSessao(List<Tarefa> listaDeTarefas, String emailLogado) {
     
     // 2. Mostra o relatório motivacional se ele tiver concluído algo
     if (!concluidas.isEmpty()) {
-        System.out.println("Essas foram as tarefas que você concluiu nessa sessão, muito bem:");
-        for (Tarefa t : concluidas) {
+        System.out.println("Essas foram as metas que você concluiu nessa sessão, muito bem:");
+        for (Meta t : concluidas) {
             System.out.println("✔️ " + t.getDescricao());
         }
         System.out.println("\nAgora elas serão apagadas para dar espaço para novas realizações! 🚀");
     } else {
-        System.out.println("Nenhuma tarefa foi concluída hoje, mas amanhã é um novo dia para progredir!");
+        System.out.println("Nenhuma meta foi concluída hoje, mas amanhã é um novo dia para progredir!");
     }
     
-    // 3. Salva no arquivo JSON APENAS as tarefas que continuam pendentes
+    // 3. Salva no arquivo JSON APENAS as metas que continuam pendentes
     // Assim, na próxima vez que ele logar, as concluídas sumiram do arquivo automaticamente!
-    salvarTarefasNoArquivo(pendentes, emailLogado);
+    salvarMetasNoArquivo(pendentes, emailLogado);
     
     System.out.println("==================================================");
 }
