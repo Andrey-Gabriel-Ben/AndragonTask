@@ -120,6 +120,99 @@ public class ATM {
         return null;
     }
 
+
+    private static void telaMetas(Scanner scanner, String emailLogado) {
+        int op = -1;
+        MetasControler mc = new MetasControler();
+        UsuarioController uc = new UsuarioController();
+
+        // 1. Busca o nome do usuário para a mensagem de boas-vindas personalizada
+        String nomeUsuario = "Usuário";
+        // Vamos ler a lista central de usuários para achar o nome dono deste email
+        java.util.List<Usuario> usuarios = uc.lerTodosUsuarios();
+        for (Usuario u : usuarios) {
+            if (u.getEmail().equalsIgnoreCase(emailLogado)) {
+                nomeUsuario = u.getNome();
+                break;
+            }
+        }
+
+        System.out.println("\n=======================================");
+        System.out.println("Olá, " + nomeUsuario + "! Bem-vindo(a) ao seu painel.");
+        System.out.println("=======================================");
+
+        while (op != 0) {
+            System.out.println("Digite o número referente à opção desejada:\n");
+            System.out.println("1 - Adicionar nova meta");
+            System.out.println("2 - Listar metas");
+            System.out.println("3 - Completar meta");
+            System.out.println("0 - Sair e limpar metas concluídas");
+
+            String entradaOpcao = scanner.nextLine().trim();
+
+            try {
+                op = Integer.parseInt(entradaOpcao);
+            } catch (NumberFormatException e) {
+                System.out.println("Opção inválida. Digite apenas números.");
+                op = -1;
+                continue;
+            }
+
+            switch (op) {
+                case 1 -> {
+                    // Chama o método de cadastrar que criamos
+                    mc.cadastrarMeta(scanner, emailLogado);
+                }
+                case 2 -> {
+                    // Lista as metas coloridas (Amarelo/Verde)
+                    mc.listarMetas(emailLogado);
+                }
+                case 3 -> {
+                    // Marca a meta como concluída com base no índice digitado
+                    mc.concluirMeta(scanner, emailLogado);
+                }
+                case 0 -> {
+                    // 2. O "Gran Finale": Antes de fechar, roda o seu relatório motivacional
+                    // Busca a lista atual do arquivo antes de passar para a limpeza de despedida
+                    java.util.List<Meta> metasAtuais = mc.lerTodasMetas(emailLogado);
+                    
+                    System.out.println("\n==================================================");
+                    System.out.println("🎉 ANDRAGON TASK - RESUMO DA SESSÃO 🎉");
+                    System.out.println("==================================================");
+                    
+                    java.util.List<Meta> concluidas = new java.util.ArrayList<>();
+                    java.util.List<Meta> pendentes = new java.util.ArrayList<>();
+                    
+                    // Separa o que foi cumprido do que continua pendente
+                    for (Meta m : metasAtuais) {
+                        if (m.isConcluida()) {
+                            concluidas.add(m);
+                        } else {
+                            pendentes.add(m);
+                        }
+                    }
+                    
+                    // Exibe o relatório que você planejou
+                    if (!concluidas.isEmpty()) {
+                        System.out.println("Essas foram as metas que você concluiu nessa sessão, muito bem:");
+                        for (Meta m : concluidas) {
+                            System.out.println("✔️ " + m.getDescricao());
+                        }
+                        System.out.println("\nAgora elas serão apagadas para dar espaço para novas realizações! 🚀");
+                    } else {
+                        System.out.println("Nenhuma meta foi concluída hoje, mas amanhã é um novo dia para progredir!");
+                    }
+                    
+                    // Grava no arquivo JSON apenas as metas que continuam pendentes
+                    mc.salvarMetas(pendentes, emailLogado);
+                    System.out.println("==================================================");
+                    System.out.println("Sessão encerrada com sucesso. Retornando ao menu de login...\n");
+                }
+                default -> System.out.println("Opção inválida. Tente novamente.");
+            }
+        }
+    }
+
     // gets
     public static String getCaminho() {
         return CAMINHO_PASTA;
@@ -149,49 +242,6 @@ public class ATM {
 
         }
     }
-
-
-
-/*
-
-pra dps
-
-public void encerrarSessao(List<Meta> listaDeMetas, String emailLogado) {
-    System.out.println("\n==================================================");
-    System.out.println("🎉 ANDRAGON TASK - RESUMO DA SESSÃO 🎉");
-    System.out.println("==================================================");
-    
-    List<Meta> concluidas = new ArrayList<>();
-    List<Meta> pendentes = new ArrayList<>();
-    
-    // 1. Separa as metas para saber o que apagar e o que manter
-    for (Meta t : listaDeMetas) {
-        if (t.isConcluida()) {
-            concluidas.add(t);
-        } else {
-            pendentes.add(t); // Essas vão sobreviver no arquivo
-        }
-    }
-    
-    // 2. Mostra o relatório motivacional se ele tiver concluído algo
-    if (!concluidas.isEmpty()) {
-        System.out.println("Essas foram as metas que você concluiu nessa sessão, muito bem:");
-        for (Meta t : concluidas) {
-            System.out.println("✔️ " + t.getDescricao());
-        }
-        System.out.println("\nAgora elas serão apagadas para dar espaço para novas realizações! 🚀");
-    } else {
-        System.out.println("Nenhuma meta foi concluída hoje, mas amanhã é um novo dia para progredir!");
-    }
-    
-    // 3. Salva no arquivo JSON APENAS as metas que continuam pendentes
-    // Assim, na próxima vez que ele logar, as concluídas sumiram do arquivo automaticamente!
-    salvarMetasNoArquivo(pendentes, emailLogado);
-    
-    System.out.println("==================================================");
-}
-
-*/
 
 
 }
