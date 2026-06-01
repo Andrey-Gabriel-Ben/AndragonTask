@@ -6,8 +6,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class ATM {
-    // 1. Define o caminho para a pasta na raiz do usuário (ex
-    // C:\Users\SeuNome\.AndragonTask)
     private static final String CAMINHO_PASTA = System.getProperty("user.home") + File.separator + ".AndragonTask";
     private static final String ARQUIVO_USUARIOS = CAMINHO_PASTA + File.separator + "users.json";
 
@@ -113,13 +111,13 @@ public class ATM {
 
                 case 0 -> {
                     System.out.println("Até a próxima!");
+                    return null;
                 }
             }
 
         }
         return null;
     }
-
 
     private static void telaMetas(Scanner scanner, String emailLogado) {
         int op = -1;
@@ -128,7 +126,6 @@ public class ATM {
 
         // 1. Busca o nome do usuário para a mensagem de boas-vindas personalizada
         String nomeUsuario = "Usuário";
-        // Vamos ler a lista central de usuários para achar o nome dono deste email
         java.util.List<Usuario> usuarios = uc.lerTodosUsuarios();
         for (Usuario u : usuarios) {
             if (u.getEmail().equalsIgnoreCase(emailLogado)) {
@@ -137,16 +134,16 @@ public class ATM {
             }
         }
 
-        System.out.println("\n=======================================");
+        System.out.println("\n=======================================================");
         System.out.println("Olá, " + nomeUsuario + "! Bem-vindo(a) ao seu painel.");
-        System.out.println("=======================================");
+        System.out.println("=======================================================");
 
         while (op != 0) {
             System.out.println("Digite o número referente à opção desejada:\n");
             System.out.println("1 - Adicionar nova meta");
             System.out.println("2 - Listar metas");
             System.out.println("3 - Completar meta");
-            System.out.println("0 - Sair e limpar metas concluídas");
+            System.out.println("0 - Sair");
 
             String entradaOpcao = scanner.nextLine().trim();
 
@@ -160,53 +157,50 @@ public class ATM {
 
             switch (op) {
                 case 1 -> {
-                    // Chama o método de cadastrar que criamos
-                    mc.cadastrarMeta(scanner, emailLogado);
+                    boolean sucesso = false;
+
+                    while (!sucesso) {
+
+                        sucesso = mc.adicionarNovaMeta(scanner, emailLogado);
+
+                        if (!sucesso) {
+                            System.out.println("Você Gostaria de tentar novamente? (s/n)");
+                            String resposta = scanner.nextLine();
+
+                            if (!resposta.equalsIgnoreCase("s")) {
+                                System.out.println("Retornando ao menu principal...");
+                                sucesso = true;
+                            }
+                        }
+                    }
+
                 }
+
                 case 2 -> {
-                    // Lista as metas coloridas (Amarelo/Verde)
                     mc.listarMetas(emailLogado);
                 }
+
                 case 3 -> {
-                    // Marca a meta como concluída com base no índice digitado
-                    mc.concluirMeta(scanner, emailLogado);
+                    boolean sucesso = false;
+
+                    while (!sucesso) {
+
+                        sucesso = mc.concluirMeta(scanner, emailLogado);
+
+                        if (!sucesso) {
+                            System.out.println("Você Gostaria de tentar novamente? (s/n)");
+                            String resposta = scanner.nextLine();
+
+                            if (!resposta.equalsIgnoreCase("s")) {
+                                System.out.println("Retornando ao menu principal...");
+                                sucesso = true;
+                            }
+                        }
+                    }
+
                 }
                 case 0 -> {
-                    // 2. O "Gran Finale": Antes de fechar, roda o seu relatório motivacional
-                    // Busca a lista atual do arquivo antes de passar para a limpeza de despedida
-                    java.util.List<Meta> metasAtuais = mc.lerTodasMetas(emailLogado);
-                    
-                    System.out.println("\n==================================================");
-                    System.out.println("🎉 ANDRAGON TASK - RESUMO DA SESSÃO 🎉");
-                    System.out.println("==================================================");
-                    
-                    java.util.List<Meta> concluidas = new java.util.ArrayList<>();
-                    java.util.List<Meta> pendentes = new java.util.ArrayList<>();
-                    
-                    // Separa o que foi cumprido do que continua pendente
-                    for (Meta m : metasAtuais) {
-                        if (m.isConcluida()) {
-                            concluidas.add(m);
-                        } else {
-                            pendentes.add(m);
-                        }
-                    }
-                    
-                    // Exibe o relatório que você planejou
-                    if (!concluidas.isEmpty()) {
-                        System.out.println("Essas foram as metas que você concluiu nessa sessão, muito bem:");
-                        for (Meta m : concluidas) {
-                            System.out.println("✔️ " + m.getDescricao());
-                        }
-                        System.out.println("\nAgora elas serão apagadas para dar espaço para novas realizações! 🚀");
-                    } else {
-                        System.out.println("Nenhuma meta foi concluída hoje, mas amanhã é um novo dia para progredir!");
-                    }
-                    
-                    // Grava no arquivo JSON apenas as metas que continuam pendentes
-                    mc.salvarMetas(pendentes, emailLogado);
-                    System.out.println("==================================================");
-                    System.out.println("Sessão encerrada com sucesso. Retornando ao menu de login...\n");
+                    mc.encerrarSessao(mc.lerTodasMetas(emailLogado), emailLogado);
                 }
                 default -> System.out.println("Opção inválida. Tente novamente.");
             }
@@ -223,28 +217,24 @@ public class ATM {
     }
 
     public static void main(String[] args) {
-        System.setOut(new java.io.PrintStream(System.out, true, java.nio.charset.StandardCharsets.UTF_8));
-        
-        boolean executa = true;
         String atual = null;
 
         criaArquivosSeNecessario();
 
         try (Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8)) {
 
-            do {
+            while (true) {
                 atual = telaLogin(scanner);
-                if (Utils.aStringEhVazia(atual)) {return;}
 
-                //tela do usuario0
+                if (Utils.aStringEhVazia(atual)) {
+                    System.out.println("Obrigado por usar o AndragonTask. Sistema encerrado!");
+                    break; 
+                }
 
-            } while (executa == true);
+                telaMetas(scanner, atual);
 
+            }
         }
     }
 
-
 }
-
-
-

@@ -152,7 +152,7 @@ public class UsuarioController {
     }
 
     // Método auxiliar para ler TODOS os usuários do arquivo de uma vez só
-    private List<Usuario> lerTodosUsuarios() {
+    public List<Usuario> lerTodosUsuarios() {
         File arquivo = new File(ATM.getArquivoUsers());
 
         if (!arquivo.exists() || arquivo.length() == 0) {
