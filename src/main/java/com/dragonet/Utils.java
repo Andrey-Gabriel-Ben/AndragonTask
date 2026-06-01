@@ -9,6 +9,10 @@ public class Utils {
         return false;
     }
 
+    public static boolean aStringEhVazia(String texto) {
+        return texto == null || texto.trim().isEmpty();
+    }
+
     public static boolean isSenhaValida(String senha) {
         if (isStringVazia(senha)){return false;}
 

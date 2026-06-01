@@ -6,13 +6,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Type; 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder; 
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 public class UsuarioController {
@@ -20,37 +20,47 @@ public class UsuarioController {
     // Instancia o Gson para ser usado nos métodos abaixo
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-
-
     // cadastro de usuarios:
     public boolean CadastrarUsuario(Scanner scanner) {
         System.out.println("Bora cadastrar um usuário novo!");
 
         System.out.println("Digite seu nome:");
         String nomeimput = scanner.nextLine();
-        if (Utils.isStringVazia(nomeimput)) {return false;}
+        if (Utils.isStringVazia(nomeimput)) {
+            return false;
+        }
 
         System.out.println("Digite seu email:");
         String emailimput = scanner.nextLine();
-        if (Utils.isStringVazia(emailimput)) {return false;}
+        if (Utils.isStringVazia(emailimput)) {
+            return false;
+        }
 
         System.out.println("Digite uma senha com mais de 8 digitos:");
         String senhaimput = scanner.nextLine();
-        if (!Utils.isSenhaValida(senhaimput)) {return false;}
+        if (!Utils.isSenhaValida(senhaimput)) {
+            return false;
+        }
 
         System.out.println("Confirme sua senha:");
         String confirmacaoimput = scanner.nextLine();
-        if (!Utils.isSenhaIgual(senhaimput, confirmacaoimput)) {return false;}
+        if (!Utils.isSenhaIgual(senhaimput, confirmacaoimput)) {
+            return false;
+        }
 
         Usuario cadastrado = new Usuario(nomeimput, emailimput, senhaimput);
 
         // Salva na lista de usuários cadastrados
-        if (!salvarNovoUsuarioNaLista(cadastrado)) {return false;}
-        
-        // Se salvou na lista com sucesso, cria o arquivo individual de tarefas dele
-        if (!CriarArquivo(cadastrado)){return false;}
+        if (!salvarNovoUsuarioNaLista(cadastrado)) {
+            return false;
+        }
 
-        //fim
+        // Se salvou na lista com sucesso, cria o arquivo individual de tarefas dele
+        if (!CriarArquivo(cadastrado)) {
+            return false;
+        }
+
+        // fim
         System.out.println("Usuario criado com sucesso");
         return true;
     }
@@ -102,18 +112,24 @@ public class UsuarioController {
     // fazer login do usuario
     public String realizarLoggin(Scanner scanner) {
         System.out.println("Bora fazer login");
-        
+
         // Inserção de dados
         System.out.println("Digite seu email:");
         String emailimput = scanner.nextLine();
-        if (Utils.isStringVazia(emailimput)) {return null;}
+        if (Utils.isStringVazia(emailimput)) {
+            return null;
+        }
 
         System.out.println("Digite sua senha:");
         String senhaimput = scanner.nextLine();
-        if (!Utils.isStringVazia(senhaimput)) {return null;}
+        if (Utils.isStringVazia(senhaimput)) {
+            return null;
+        }
 
         // realiza a verificação:
-        if (!verificarLogin(emailimput, senhaimput)) {return null;}
+        if (!verificarLogin(emailimput, senhaimput)) {
+            return null;
+        }
 
         return emailimput;
 
@@ -135,21 +151,21 @@ public class UsuarioController {
         return false;
     }
 
-
     // Método auxiliar para ler TODOS os usuários do arquivo de uma vez só
     private List<Usuario> lerTodosUsuarios() {
         File arquivo = new File(ATM.getArquivoUsers());
-        
+
         if (!arquivo.exists() || arquivo.length() == 0) {
             return new ArrayList<>();
         }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(arquivo))) {
-            Type tipoLista = new TypeToken<ArrayList<Usuario>>(){}.getType();
-            
+            Type tipoLista = new TypeToken<ArrayList<Usuario>>() {
+            }.getType();
+
             List<Usuario> lista = gson.fromJson(reader, tipoLista);
             return lista != null ? lista : new ArrayList<>();
-            
+
         } catch (IOException e) {
             System.err.println("Erro ao ler o arquivo de usuários: " + e.getMessage());
             System.out.println("\n \nRetornando uma lista vazia");
@@ -165,4 +181,5 @@ public class UsuarioController {
             System.out.println("Erro técnico ao salvar dados: " + e.getMessage());
         }
     }
+    
 }
