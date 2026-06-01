@@ -20,6 +20,8 @@ public class UsuarioController {
     // Instancia o Gson para ser usado nos métodos abaixo
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
+
+
     // cadastro de usuarios:
     public boolean CadastrarUsuario(Scanner scanner) {
         System.out.println("Bora cadastrar um usuário novo!");
@@ -43,12 +45,14 @@ public class UsuarioController {
         Usuario cadastrado = new Usuario(nomeimput, emailimput, senhaimput);
 
         // Salva na lista de usuários cadastrados
-        boolean salvouLista = salvarNovoUsuarioNaLista(cadastrado);
+        if (!salvarNovoUsuarioNaLista(cadastrado)) {return false;}
         
         // Se salvou na lista com sucesso, cria o arquivo individual de tarefas dele
-        if (salvouLista) {return CriarArquivo(cadastrado);}
-        
-        return false;
+        if (!CriarArquivo(cadastrado)){return false;}
+
+        //fim
+        System.out.println("Usuario criado com sucesso");
+        return true;
     }
 
     // Cria o arquivo do usuario para armazenar as tarefas

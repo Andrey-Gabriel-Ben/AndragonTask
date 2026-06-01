@@ -2,6 +2,8 @@ package com.dragonet;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 public class ATM {
     // 1. Define o caminho para a pasta na raiz do usuário (ex
@@ -38,9 +40,84 @@ public class ATM {
         }
     }
 
-    private void telaLogin() {
+    private static String telaLogin(Scanner scanner) {
+        int op = -1;
+        UsuarioController uc = new UsuarioController();
+
         System.out.println("Seja bem-vindo ao AndragonTask.");
 
+        while (op != 0) {
+
+            System.out.println("Digite o número referente à opção desejada: \n");
+            System.out.println("1 - Realizar login");
+            System.out.println("2 - Cadastrar um novo usuário.");
+            System.out.println("0 - Fechar sistema");
+
+            String entradaOpcao = scanner.nextLine().trim();
+
+            try {
+                op = Integer.parseInt(entradaOpcao);
+            } catch (NumberFormatException e) {
+                System.out.println("Opção inválida. Digite apenas números.");
+                op = -1;
+                continue;
+            }
+
+            switch (op) {
+                case 1 -> {
+                    boolean sucesso = false;
+                    String emailLogado = null;
+
+                    while (!sucesso) {
+
+                        emailLogado = uc.realizarLoggin(scanner);
+
+                        if (emailLogado != null) {
+                            sucesso = true;
+                        } else {
+                            System.out.println("Você Gostaria de tentar novamente? (s/n)");
+                            String resposta = scanner.nextLine();
+
+                            if (!resposta.equalsIgnoreCase("s")) {
+                                System.out.println("Retornando ao menu principal...");
+                                sucesso = true;
+                            }
+                        }
+                    }
+
+                    if (emailLogado != null) {
+                        System.out.println("Direcionando para a sua lista de tarefas...");
+                        return emailLogado;
+                    }
+                }
+
+                case 2 -> {
+                    boolean sucesso = false;
+
+                    while (!sucesso) {
+
+                        sucesso = uc.CadastrarUsuario(scanner);
+
+                        if (!sucesso) {
+                            System.out.println("Você Gostaria de tentar novamente? (s/n)");
+                            String resposta = scanner.nextLine();
+
+                            if (!resposta.equalsIgnoreCase("s")) {
+                                System.out.println("Retornando ao menu principal...");
+                                sucesso = true;
+                            }
+                        }
+                    }
+
+                }
+
+                case 0 -> {
+                    System.out.println("Até a próxima!");
+                }
+            }
+
+        }
+        return null;
     }
 
     // gets
@@ -53,20 +130,20 @@ public class ATM {
     }
 
     public static void main(String[] args) {
+        boolean executa = true;
+        String atual = null;
 
         criaArquivosSeNecessario();
-        
-        boolean executa = true;
-         
-        do {
-        telaLogin()
-         
-        exibeAsOpçoes(atual);
-         
-        executa = acessarOutroPerfil();
-        } while (executa == true);
-         
-        
+
+        try (Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8)) {
+
+            do {
+                atual = telaLogin(scanner);
+                if (Utils.isStringVazia(atual)) {return;}
+
+            } while (executa == true);
+
+        }
     }
 
 }
