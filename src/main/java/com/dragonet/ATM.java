@@ -44,7 +44,7 @@ public class ATM {
         int op = -1;
         UsuarioController uc = new UsuarioController();
 
-        System.out.println("Seja bem-vindo ao AndragonTask.");
+        System.out.println("Seja bem-vindo ao AndragonTask. \n \n");
 
         while (op != 0) {
 
@@ -139,11 +139,60 @@ public class ATM {
 
             do {
                 atual = telaLogin(scanner);
-                if (Utils.isStringVazia(atual)) {return;}
+                if (Utils.aStringEhVazia(atual)) {return;}
+
+                //tela do usuario0
 
             } while (executa == true);
 
         }
     }
 
+
+
+/*
+
+pra dps
+
+public void encerrarSessao(List<Tarefa> listaDeTarefas, String emailLogado) {
+    System.out.println("\n==================================================");
+    System.out.println("🎉 ANDRAGON TASK - RESUMO DA SESSÃO 🎉");
+    System.out.println("==================================================");
+    
+    List<Tarefa> concluidas = new ArrayList<>();
+    List<Tarefa> pendentes = new ArrayList<>();
+    
+    // 1. Separa as tarefas para saber o que apagar e o que manter
+    for (Tarefa t : listaDeTarefas) {
+        if (t.isConcluida()) {
+            concluidas.add(t);
+        } else {
+            pendentes.add(t); // Essas vão sobreviver no arquivo
+        }
+    }
+    
+    // 2. Mostra o relatório motivacional se ele tiver concluído algo
+    if (!concluidas.isEmpty()) {
+        System.out.println("Essas foram as tarefas que você concluiu nessa sessão, muito bem:");
+        for (Tarefa t : concluidas) {
+            System.out.println("✔️ " + t.getDescricao());
+        }
+        System.out.println("\nAgora elas serão apagadas para dar espaço para novas realizações! 🚀");
+    } else {
+        System.out.println("Nenhuma tarefa foi concluída hoje, mas amanhã é um novo dia para progredir!");
+    }
+    
+    // 3. Salva no arquivo JSON APENAS as tarefas que continuam pendentes
+    // Assim, na próxima vez que ele logar, as concluídas sumiram do arquivo automaticamente!
+    salvarTarefasNoArquivo(pendentes, emailLogado);
+    
+    System.out.println("==================================================");
 }
+
+*/
+
+
+}
+
+
+

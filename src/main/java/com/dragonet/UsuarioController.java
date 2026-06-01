@@ -22,7 +22,7 @@ public class UsuarioController {
 
     // cadastro de usuarios:
     public boolean CadastrarUsuario(Scanner scanner) {
-        System.out.println("Bora cadastrar um usuário novo!");
+        System.out.println("Bora cadastrar um usuário novo! \n");
 
         System.out.println("Digite seu nome:");
         String nomeimput = scanner.nextLine();
@@ -30,19 +30,19 @@ public class UsuarioController {
             return false;
         }
 
-        System.out.println("Digite seu email:");
+        System.out.println("\nDigite seu email:");
         String emailimput = scanner.nextLine();
         if (Utils.isStringVazia(emailimput)) {
             return false;
         }
 
-        System.out.println("Digite uma senha com mais de 8 digitos:");
+        System.out.println("\nDigite uma senha com mais de 8 digitos:");
         String senhaimput = scanner.nextLine();
         if (!Utils.isSenhaValida(senhaimput)) {
             return false;
         }
 
-        System.out.println("Confirme sua senha:");
+        System.out.println("\nConfirme sua senha:");
         String confirmacaoimput = scanner.nextLine();
         if (!Utils.isSenhaIgual(senhaimput, confirmacaoimput)) {
             return false;
@@ -61,7 +61,7 @@ public class UsuarioController {
         }
 
         // fim
-        System.out.println("Usuario criado com sucesso");
+        System.out.println("Usuario criado com sucesso\n");
         return true;
     }
 
@@ -73,7 +73,7 @@ public class UsuarioController {
         File arquivo = new File(caminho);
 
         if (arquivo.exists()) {
-            System.out.println("Ops! Já existe um usuário com esse email cadastrado.");
+            System.out.println("Ops! Já existe um usuário com esse email cadastrado.\n");
             return false;
         }
 
@@ -81,7 +81,7 @@ public class UsuarioController {
             boolean criadoComSucesso = arquivo.createNewFile();
 
             if (criadoComSucesso) {
-                System.out.println("Arquivo de tarefas criado para o usuário: " + usuario.getNome());
+                System.out.println("Arquivo de tarefas criado para o usuário: " + usuario.getNome() + "\n");
                 return true;
             } else {
                 return false;
@@ -111,16 +111,16 @@ public class UsuarioController {
 
     // fazer login do usuario
     public String realizarLoggin(Scanner scanner) {
-        System.out.println("Bora fazer login");
+        System.out.println("Bora fazer login\n");
 
         // Inserção de dados
-        System.out.println("Digite seu email:");
+        System.out.println("Digite seu email: ");
         String emailimput = scanner.nextLine();
         if (Utils.isStringVazia(emailimput)) {
             return null;
         }
 
-        System.out.println("Digite sua senha:");
+        System.out.println("\nDigite sua senha: ");
         String senhaimput = scanner.nextLine();
         if (Utils.isStringVazia(senhaimput)) {
             return null;
@@ -142,12 +142,12 @@ public class UsuarioController {
         // 2. Percorre a lista procurando a combinação de email e senha
         for (Usuario u : usuariosAtuais) {
             if (u.getEmail().equalsIgnoreCase(email) && u.getSenha().equals(senha)) {
-                System.out.println("Login realizado com sucesso! Bem-vindo, " + u.getNome() + ".");
+                System.out.println("Login realizado com sucesso! Bem-vindo, " + u.getNome() + ".\n");
                 return true;
             }
         }
 
-        System.out.println("Usuário ou senha incorretos.");
+        System.out.println("Usuário ou senha incorretos.\n");
         return false;
     }
 
